@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meeting.manager.mapper.ScheduleMapper">
+    <select id="findAll" resultType="com.meeting.manager.model.Schedule">
+        SELECT DISTINCT
+            S.ID_ as id,
+            U.REALNAME_ as username,
+            U.PHONE_ as phone,
+            S.STARTDATETIME_ as startdatetime,
+            S.ENDDATETIME_ as enddatetime,
+            S.REALITYDATETIME_ as realitydatetime,
+            S.STATUS_ as status,
+            S.USERID_ as userid,
+            S.REMARK_ as remark,
+            M.NAME_ as meetingname,
+            S.CREATETIME as createtime
+        FROM SCHEDULE S
+        LEFT JOIN USERS U ON S.USERID_=U.ID_
+        LEFT JOIN MEETING M ON S.MEETINGID_=M.ID_
+        WHERE 1=1
+        <if test="username!=null and username!=''">
+            AND U.REALNAME_ like '%${username}%'
+        </if>
+        <if test="userid!=null and userid!=''">
+            AND S.USERID_ = #{userid}
+        </if>
+        <if test="starttime!=null and starttime!=''">
+            AND S.STARTDATETIME_ &gt;= #{starttime}
+        </if>
+        <if test="endtime!=null and endtime!=''">
+            AND S.STARTDATETIME_ &lt;= #{endtime}
+        </if>
+        <if test="scheduletime!=null and scheduletime!=''">
+            AND (
+                (S.STARTDATETIME_ &lt;= #{startscheduletime} AND S.ENDDATETIME_ &gt;= #{startscheduletime} or S.STARTDATETIME_ &lt;= #{endscheduletime} AND S.ENDDATETIME_ &gt;= #{endscheduletime})
+                OR
+                (S.STARTDATETIME_ &gt;= #{startscheduletime} AND S.STARTDATETIME_ &lt;= #{endscheduletime} or S.ENDDATETIME_ &gt;= #{startscheduletime} AND S.ENDDATETIME_ &lt;= #{endscheduletime})
+            )
+        </if>
+        <if test="meetingid!=null and meetingid!=''">
+            AND S.MEETINGID_ = #{meetingid}
+        </if>
+        ORDER BY S.CREATETIME desc
+        <if test="isPage">
+	        limit #{startPosition} , #{sizePerPage}
+        </if>
+    </select>
+    <select id="count" resultType="Long">
+        select count(1) from SCHEDULE
+    </select>
+</mapper>

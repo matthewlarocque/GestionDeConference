@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meeting.manager.mapper.AnalyseMapper">
+
+    <select id="statReservation" resultType="com.meeting.manager.model.Analyse">
+        SELECT
+            M.NAME_ as name,
+            COUNT(S.USERID_) as val
+        FROM SCHEDULE S
+            JOIN MEETING M ON S.MEETINGID_ = M.ID_
+        GROUP BY M.NAME_
+    </select>
+
+    <select id="statPeriod" resultType="com.meeting.manager.model.Analyse">
+        SELECT
+            M.NAME_ as name,
+            ROUND(SUM(DATEDIFF(S.ENDDATETIME_, S.STARTDATETIME_)), 0) AS val
+        FROM
+            SCHEDULE S
+                JOIN MEETING M ON S.MEETINGID_ = M.ID_
+        GROUP BY
+            M.NAME_;
+    </select>
+
+    <select id="statVioByChamber" resultType="com.meeting.manager.model.Analyse">
+        SELECT M.NAME_ as name, COUNT(*) as val
+        FROM MEETING M
+                 INNER JOIN SCHEDULE S ON M.ID_ = S.MEETINGID_
+                 INNER JOIN DISCIPLINE D ON S.USERID_ = D.USERID_
+        GROUP BY M.NAME_
+    </select>
+
+    <select id="statVioByUser" resultType="com.meeting.manager.model.Analyse">
+        SELECT U.REALNAME_ AS name, COUNT(*) AS val
+        FROM USERS U
+                 JOIN DISCIPLINE D ON U.ID_ = D.USERID_
+        GROUP BY U.REALNAME_;
+    </select>
+
+    <select id="statFreq" resultType="com.meeting.manager.model.Analyse">
+        SELECT U.REALNAME_ AS name, COUNT(*) AS val
+        FROM USERS U
+                 JOIN SCHEDULE S ON U.ID_ = S.USERID_
+        GROUP BY U.REALNAME_;
+    </select>
+
+</mapper>

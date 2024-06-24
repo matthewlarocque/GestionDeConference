@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meeting.manager.mapper.DisciplineMapper">
+    <select id="findAll" resultType="com.meeting.manager.model.Discipline">
+        SELECT DISTINCT
+            B.ID_ as id,
+            B.CONTENT_ as content,
+            B.PUNISHMENT_ as punishment,
+            B.REMARK_ as remark,
+            U.REALNAME_ as realname,
+            U.PHONE_ as phone,
+            B.CREATETIME as createtime
+        FROM DISCIPLINE B
+        LEFT JOIN USERS U ON B.USERID_=U.ID_
+        LEFT JOIN SCHEDULE CK ON B.USERID_=CK.USERID_
+        WHERE 1=1
+        <if test="punishment!=null and punishment!=''">
+            AND B.PUNISHMENT_ = #{punishment}
+        </if>
+        <if test="userid!=null and userid!=''">
+            AND U.ID_ like '%${userid}%'
+        </if>
+        <if test="content!=null and content!=''">
+            AND B.CONTENT_ = #{content}
+        </if>
+        <if test="realname!=null and realname!=''">
+            AND U.REALNAME_ like '%${realname}%'
+        </if>
+        ORDER BY B.CREATETIME desc
+        <if test="isPage">
+	        limit #{startPosition} , #{sizePerPage}
+        </if>
+    </select>
+    <select id="count" resultType="Long">
+        select count(1) from DISCIPLINE
+    </select>
+</mapper>

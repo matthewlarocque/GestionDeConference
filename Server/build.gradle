@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '2.6.7'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group 'com.book'
+version '0.0.1-SNAPSHOT'
+description 'Gestion de la Conferencia'
+
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    // mavenCentral()
+    maven {url = 'https://artifacts-oss.talend.com/nexus/content/repositories/TalendOpenSourceRelease/'}
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'net.sf.json-lib:json-lib:2.4.8-talend'
+    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'org.apache.poi:poi-ooxml:3.17'
+    implementation 'org.apache.poi:poi:3.17'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+bootJar {
+    enabled = true
+}

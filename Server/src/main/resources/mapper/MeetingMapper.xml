@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meeting.manager.mapper.MeetingMapper">
+    <select id="findAll" resultType="com.meeting.manager.model.Meeting">
+        SELECT DISTINCT
+            M.ID_ as id,
+            M.NAME_ as name,
+            M.TYPE_ as type,
+            M.CREATETIME as createtime
+        FROM MEETING M
+        WHERE 1=1
+        <if test="name!=null and name!=''">
+            AND M.NAME_ like '%${name}%'
+        </if>
+        <if test="type!=null and type!=''">
+            AND M.TYPE_ = #{type}
+        </if>
+        ORDER BY M.CREATETIME
+        <if test="isPage">
+	        limit #{startPosition} , #{sizePerPage}
+        </if>
+    </select>
+    <select id="count" resultType="Long">
+        select count(1) from MEETING
+    </select>
+</mapper>
